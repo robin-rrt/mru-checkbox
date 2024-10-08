@@ -1,7 +1,7 @@
 {
     "state": {
-        "admins": ["0xF0156457842a1A4326941493B1DCe304EF30CBAd"],
-        "checkBoxGrid": [], 
+        "admins": ["0x0479C55a1E7f3BAa7BC402f84Fff2a4d1DBE5DD3", "0xF0156457842a1A4326941493B1DCe304EF30CBAd"],
+        "checkBoxGrid": 0, 
         "isGameStart": false,
         "numBits": 0
     

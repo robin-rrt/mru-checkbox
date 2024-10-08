@@ -7,20 +7,18 @@ export const constructTree = (state: CheckboxGridState): MerkleTree => {
   const adminHashes = state.admins.map((address) =>
     solidityPackedKeccak256(["string"], [address])
   );
-  const checkBoxGridHashes = state.checkBoxGrid.map((Bytes) =>
-    solidityPackedKeccak256(["bytes"], [Bytes])
-  );
+  const checkBoxGridHashes = solidityPackedKeccak256(["uint8"], [state.checkBoxGrid]);
   const isGameStartHashes = solidityPackedKeccak256(["bool"], [state.isGameStart]);
-  const numBitsHashes = solidityPackedKeccak256(["number"], [state.numBits]);
+  const numBitsHashes = solidityPackedKeccak256(["uint"], [state.numBits]);
 
   const adminsRoot = new MerkleTree(adminHashes).getHexRoot();
-  const checkBoxGridRoot = new MerkleTree(checkBoxGridHashes).getHexRoot();
+  // const checkBoxGridRoot = new MerkleTree(checkBoxGridHashes).getHexRoot();
 
 
 
   return new MerkleTree([
     adminsRoot,
-    checkBoxGridRoot,
+    checkBoxGridHashes,
     isGameStartHashes,
     numBitsHashes
   ]);

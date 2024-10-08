@@ -1,0 +1,70 @@
+import { ActionConfirmationStatus } from "@stackr/sdk";
+import { Wallet } from "ethers";
+
+
+import { mru } from "./stackr/mru.ts";
+import { signMessage } from "./utils.ts";
+
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const main = async () => {
+  // Create a random wallet
+  const wallet = Wallet.fromPhrase(process.env.SEED as string);
+  const transitions = {
+    startGame: "startGame",
+    toggleBit: "toggleBit",
+  };
+  const domain = mru.config.domain;
+
+  //startGame
+  const inputs = {
+    numBits: 8,
+  };
+  const types = mru.getStfSchemaMap()[transitions.startGame];
+  const signature = await signMessage(wallet, domain, types, {
+    name: transitions.startGame,
+    inputs,
+  });
+  const ActionParams = {
+    name: transitions.startGame,
+    inputs,
+    signature,
+    msgSender: wallet.address,
+  };
+  const ack = await mru.submitAction(ActionParams);
+  console.log(ack.hash);
+
+  // leverage the ack to wait for C1 and access logs & error from STF execution
+  const { logs, errors } = await ack.waitFor(ActionConfirmationStatus.C1);
+  console.log({ logs, errors });
+
+  //toggleBit
+  const types2 = mru.getStfSchemaMap()[transitions.toggleBit];
+  const toggleBitInputs = {
+    index: 0,
+  };
+  const signature2 = await signMessage(wallet, domain, types2, {
+    name: transitions.toggleBit,
+    inputs: toggleBitInputs,
+  });
+  const ActionParams2 = {
+    name: transitions.toggleBit,
+    inputs: toggleBitInputs,
+    signature: signature2,
+    msgSender: wallet.address,
+  };
+
+  console.log(ActionParams2)
+  const ack2 = await mru.submitAction(ActionParams2);
+  console.log(ack2.hash);
+
+  // leverage the ack to wait for C1 and access logs & error from STF execution
+  const { logs: logs2, errors: errors2 } = await ack2.waitFor(
+    ActionConfirmationStatus.C1
+  );
+  console.log({ logs2, errors2 });
+};
+
+main();

@@ -6,7 +6,7 @@
 
 export type CheckboxGridState = {
     admins: string[]; // list of admin addresses (that can send STFs)
-    checkBoxGrid:  Uint8Array[];// mapping b/w flag hash and points
+    checkBoxGrid:  Uint8Array;
     isGameStart: boolean;
     numBits: number
   };
